@@ -1,7 +1,4 @@
-const data = [
-    { name: 'Repeat first question', created: 1610467000000, iteration: 0 },
-    { name: 'Repeat second question', created: Date.now(), iteration: 0 }
-];
+let data = [];
 
 const sec = 1000;
 const minute = 60 * sec;
@@ -10,6 +7,19 @@ const settings = [
     oneHour / 3,
     oneHour * 2,
 ];
+
+const setData = (data) => {
+    localStorage.setItem('values', JSON.stringify(data));
+};
+
+const addNewValue = (name) => {
+    data.push({
+        created: Date.now(),
+        iteration: 0,
+        name
+    });
+    setData(data);
+};
 
 const playSound = () => {
     console.log('sound started');
@@ -36,6 +46,15 @@ const getCardMarkup = ({ name, created, iteration }) => {
 
 window.onload = () => {
     const target = document.getElementById('cards');
+    const addButton = document.getElementById('addNew');
+    const addInput = document.getElementById('nameNew');
+
+    addButton.onclick = () => {
+        addNewValue(addInput.value);
+        addInput.value = '';
+    };
+
+    data = JSON.parse(localStorage.getItem('values') || '[]');
 
     target.innerHTML = data.map((el) => getCardMarkup(el)).join('\n');
 
